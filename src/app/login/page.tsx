@@ -40,7 +40,7 @@ export default function LoginPage() {
 
       setBtnLoading(true);
 
-      let response = await fetch(`${baseURL}/users/login`, {
+      let response = await fetch(`${baseURL}/api/users/login`, {
         method: "POST",
         body: JSON.stringify(form),
       });
