@@ -191,9 +191,11 @@ function AllContext({ children }: { children: ReactNode }) {
   let [activeCount, setActiveCount] = useState<number>(0);
   // Others :
   let [authToken, setAuthToken] = useState<string>("");
-  const storedTheme = localStorage.getItem("theme");
+  const storedTheme =
+    typeof window !== "undefined" ? localStorage.getItem("theme") : null;
   let [theme, setTheme] = useState<string>(storedTheme ? storedTheme : "light");
-  const storedUser = localStorage.getItem("localUser");
+  const storedUser =
+    typeof window !== "undefined" ? localStorage.getItem("localUser") : null;
   let [pageLoading, setPageLoading] = useState<boolean>(false);
   const [leaveBtn, setLeaveBtn] = useState<boolean>(false);
   const [called, setCalled] = useState<boolean>(false);
@@ -214,7 +216,10 @@ function AllContext({ children }: { children: ReactNode }) {
         },
     isManager: false,
   });
-  const storedLogin = localStorage.getItem("tempUserLogin");
+  const storedLogin =
+    typeof window !== "undefined"
+      ? localStorage.getItem("tempUserLogin")
+      : null;
   let [isLogin, setIsLogin] = useState<boolean>(
     storedLogin ? JSON.parse(storedLogin) : false,
   );
