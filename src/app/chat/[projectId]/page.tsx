@@ -240,15 +240,15 @@ export default function page() {
                   </p>
                 </div>
 
-                <details
-                  onClick={() => {
-                    if (!showMembers) {
-                      setShowMembers(true);
-                    } else setShowMembers(false);
-                  }}
-                  className="relative inline-block shrink-0"
-                >
-                  <summary className="list-none cursor-pointer rounded-full border border-emerald-200 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-700 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-emerald-500 hover:text-white dark:border-emerald-500/20 dark:text-emerald-300 dark:hover:bg-emerald-600 dark:hover:text-white">
+                <details className="relative inline-block shrink-0">
+                  <summary
+                    onClick={() => {
+                      if (!showMembers) {
+                        setShowMembers(true);
+                      } else setShowMembers(false);
+                    }}
+                    className="list-none cursor-pointer rounded-full border border-emerald-200 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-700 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-emerald-500 hover:text-white dark:border-emerald-500/20 dark:text-emerald-300 dark:hover:bg-emerald-600 dark:hover:text-white"
+                  >
                     <span>{members.length} members</span>
                     <span className="ml-2 rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-slate-900 dark:text-emerald-300">
                       {showMembers ? "Hide Members" : "View Members"}
@@ -282,7 +282,7 @@ export default function page() {
                                 {member.user.name}
                               </p>
                               <p className="text-xs text-slate-500 dark:text-slate-400">
-                                Active member
+                                {member.designation}
                               </p>
                             </div>
                           </div>
