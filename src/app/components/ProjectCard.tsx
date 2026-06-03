@@ -114,7 +114,7 @@ export default function ProjectCard({
                 <span className={`h-2 w-2 rounded-full bg-red-600`} />
               )}
               {!isFailed ? (
-                <> {deadLineCalc(deadlineDate)} "days left"</>
+                <> {deadLineCalc(deadlineDate)} days left</>
               ) : (
                 <> Failed Project</>
               )}
