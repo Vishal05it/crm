@@ -35,6 +35,9 @@ export const deadLineCalc = (deadLine: string | number): number => {
       return 0;
     }
     let totalDays = monthlyDays[currMonth].days - currDay;
+    if (monthOut == currMonth && dayOut > currDay) {
+      return totalDays;
+    }
     let additionalDays = 0;
     for (let i = currMonth + 1; i < monthOut - 1; i++) {
       additionalDays += monthlyDays[i].days;
