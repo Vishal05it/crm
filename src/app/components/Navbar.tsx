@@ -402,9 +402,22 @@ export default function Navbar() {
                   navigate.push("/notifications");
                   setMobileMenuOpen(false);
                 }}
-                className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-600 hover:text-white hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-indigo-600 dark:hover:text-white"
+                className="flex w-full  items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-600 hover:text-white hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-indigo-600 dark:hover:text-white"
               >
-                <Bell className="h-4 w-4" />
+                <div className="relative flex gap-4 items-center">
+                  <Bell className="h-5 w-5" />
+                  <span
+                    className={
+                      filterUnRead > 0
+                        ? "absolute -right-1 -top-1 flex h-3 min-w-3 items-center justify-center rounded-full bg-red-500 px-1 text-[7px] font-semibold text-white shadow-sm"
+                        : "absolute -right-1 -top-1 flex h-3 min-w-3 items-center justify-center rounded-full bg-emerald-500 px-1 text-[7px] font-semibold text-white shadow-sm"
+                    }
+                  >
+                    <span className="flex items-center justify-center">
+                      {filterUnRead}
+                    </span>
+                  </span>{" "}
+                </div>
                 Notifications
               </button>
               <button
