@@ -275,7 +275,7 @@ export default function Navbar() {
                   className={
                     filterUnRead > 0
                       ? "absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white shadow-sm"
-                      : "absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-semibold text-white shadow-sm"
+                      : "absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] opacity-0 font-semibold text-white shadow-sm"
                   }
                 >
                   <span className="flex items-center justify-center">
