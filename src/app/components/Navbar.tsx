@@ -13,6 +13,10 @@ import {
   Search as SearchIcon,
   SunIcon,
   MoonStar,
+  ArrowBigRight,
+  UserPlus,
+  DoorOpenIcon,
+  InfoIcon,
 } from "lucide-react";
 import { useAllContexts } from "../context/AllContext";
 import { useRouter } from "next/navigation";
@@ -388,37 +392,65 @@ export default function Navbar() {
             <div className="space-y-2">
               <button
                 onClick={() => {
-                  navigate.push("/profile");
+                  isLogin ? navigate.push("/profile") : navigate.push("/login");
                   setMobileMenuOpen(false);
                 }}
                 className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-600 hover:text-white hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-indigo-600 dark:hover:text-white"
               >
-                <UserRound className="h-4 w-4" />
-                View Profile
+                {isLogin ? (
+                  <>
+                    {" "}
+                    <UserRound className="h-4 w-4" />
+                    View Profile
+                  </>
+                ) : (
+                  <>
+                    <div className="flex gap-3 items-center">
+                      {" "}
+                      <DoorOpenIcon className="h-4 w-4" />
+                      Login
+                    </div>
+                  </>
+                )}
               </button>
 
               <button
                 onClick={() => {
-                  navigate.push("/notifications");
+                  isLogin
+                    ? navigate.push("/notifications")
+                    : navigate.push("/signup");
                   setMobileMenuOpen(false);
                 }}
                 className="flex w-full  items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-600 hover:text-white hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-indigo-600 dark:hover:text-white"
               >
-                <div className="relative flex gap-4 items-center">
-                  <Bell className="h-5 w-5" />
-                  <span
-                    className={
-                      filterUnRead > 0
-                        ? "absolute -right-1 -top-1 flex h-3 min-w-3 items-center justify-center rounded-full bg-red-500 px-1 text-[7px] font-semibold text-white shadow-sm"
-                        : "absolute -right-1 -top-1 opacity-0 flex h-3 min-w-3 items-center justify-center rounded-full bg-emerald-500 px-1 text-[7px] font-semibold text-white shadow-sm"
-                    }
-                  >
-                    <span className="flex items-center justify-center">
-                      {filterUnRead}
-                    </span>
-                  </span>{" "}
-                </div>
-                Notifications
+                {isLogin ? (
+                  <>
+                    <div className="relative flex gap-4 items-center">
+                      <Bell className="h-5 w-5" />
+                      <span
+                        className={
+                          filterUnRead > 0
+                            ? "absolute -right-1 -top-1 flex h-3 min-w-3 items-center justify-center rounded-full bg-red-500 px-1 text-[7px] font-semibold text-white shadow-sm"
+                            : "absolute -right-1 -top-1 opacity-0 flex h-3 min-w-3 items-center justify-center rounded-full bg-emerald-500 px-1 text-[7px] font-semibold text-white shadow-sm"
+                        }
+                      >
+                        <span className="flex items-center justify-center">
+                          {filterUnRead}
+                        </span>
+                      </span>{" "}
+                    </div>
+                    Notifications
+                  </>
+                ) : (
+                  <>
+                    <div className="flex gap-3 items-center">
+                      <div className="relative flex gap-4 items-center">
+                        <UserPlus className="h-5 w-5" />
+                      </div>
+                      Sign Up
+                    </div>
+                  </>
+                )}
               </button>
               <button
                 onClick={() => {
@@ -435,26 +467,39 @@ export default function Navbar() {
                 Change Theme
               </button>
 
-              <button
+              {/* <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-600 hover:text-white hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-indigo-600 dark:hover:text-white"
               >
                 <SearchIcon className="h-4 w-4" />
                 Search Projects
-              </button>
+              </button> */}
 
-              <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div className="flex items-center gap-2">
-                  <Search className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-                  <input
-                    type="text"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="Search projects..."
-                    className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400 dark:text-slate-200"
-                  />
+              {isLogin ? (
+                <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                  <div className="flex items-center gap-2">
+                    <Search className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                    <input
+                      type="text"
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                      placeholder="Search projects..."
+                      className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400 dark:text-slate-200"
+                    />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate.push("/about");
+                  }}
+                  className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-600 hover:text-white hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-indigo-600 dark:hover:text-white"
+                >
+                  <InfoIcon className="h-4 w-4" />
+                  About Ease Work
+                </button>
+              )}
             </div>
           </div>
 
