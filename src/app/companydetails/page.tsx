@@ -6,9 +6,10 @@ import { useAllContexts } from "../context/AllContext";
 import UnauthorizedAccessPage from "../components/Unauthorized";
 import { useRouter } from "next/navigation";
 import { checkLogin } from "../utils/checkLogin";
+import { isManager } from "../utils/isManager";
 
 export default function page() {
-  const { user, isLogin, setIsLogin } = useAllContexts();
+  const { user, isLogin, setIsLogin, setUser } = useAllContexts();
   const [copy, setCopy] = useState<boolean>(false);
   const router = useRouter();
   const executeCheckLogin = async () => {
@@ -16,6 +17,8 @@ export default function page() {
       let loggedData = await checkLogin(user._id);
       if (loggedData) {
         setIsLogin(true);
+        let result = await isManager(user._id);
+        if (result) setUser({ ...user, isManager: true });
         return true;
       } else {
         setIsLogin(true);
@@ -96,6 +99,16 @@ export default function page() {
                   >
                     Close
                   </button>
+
+                  {user.isManager && (
+                    <button
+                      onClick={() => router.push("/editcompany")}
+                      className="flex-1 rounded-full border border-indigo-200 bg-indigo-50 px-5 py-3 text-sm font-medium text-indigo-700 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-indigo-100 hover:shadow-md dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300 dark:hover:bg-indigo-950"
+                    >
+                      Edit Company
+                    </button>
+                  )}
+
                   <button
                     onClick={() => {
                       window.navigator.clipboard.writeText(user.companyId._id);
