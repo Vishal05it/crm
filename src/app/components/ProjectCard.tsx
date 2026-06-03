@@ -30,8 +30,6 @@ export default function ProjectCard({
   isDone,
   deadlineDate,
 }: Props) {
-  let { user } = useAllContexts();
-
   const router = useRouter();
 
   return (
