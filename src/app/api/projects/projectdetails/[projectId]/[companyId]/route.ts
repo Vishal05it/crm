@@ -86,7 +86,11 @@ export async function GET(
       .find({ forProject: projectId })
       .populate("byUser");
 
-    if (deadLineCalc(project.deadlineDate) == 10 && !project.isDone) {
+    if (
+      deadLineCalc(project.deadlineDate) == 10 &&
+      !project.isDone &&
+      !project.isFailed
+    ) {
       members.map((elm) => {
         transport.sendMail({
           from: process.env.EMAIL,
@@ -95,6 +99,27 @@ export async function GET(
           text: `Hello ${elm.user.name},
 
 This is a reminder that the deadline for the project titled "${project.title}" is in 10 days.
+
+Please make sure all pending tasks, uploads, and reviews are completed before the deadline. Coordinate with your team members and update your progress regularly.
+
+Thank you,
+Ease Work Team`,
+        });
+      });
+    }
+    if (
+      deadLineCalc(project.deadlineDate) == 1 &&
+      !project.isDone &&
+      !project.isFailed
+    ) {
+      members.map((elm) => {
+        transport.sendMail({
+          from: process.env.EMAIL,
+          to: elm.user.email,
+          subject: `Project Deadline Reminder – ${project.title}`,
+          text: `Hello ${elm.user.name},
+
+This is a reminder that the deadline for the project titled "${project.title}" is tomorrow.
 
 Please make sure all pending tasks, uploads, and reviews are completed before the deadline. Coordinate with your team members and update your progress regularly.
 
