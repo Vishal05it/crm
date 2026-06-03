@@ -173,7 +173,7 @@ export default function ProjectDetailsPage() {
     tasks.length > 0 ? tasks.length - finishedTasks : 0,
   );
   const [deadlineDate, setDeadlineDate] = useState("");
-  const [reason, setReason] = useState<string>("");
+  const [reason, setReason] = useState<string>("Deadline Passed");
   const [designation, setDesignation] = useState<string>("");
   const [isDropModalOpen, setIsDropModalOpen] = useState<boolean>(false);
   const [daysUntilDeadline, setDaysUntilDeadline] = useState(0);
@@ -982,6 +982,14 @@ export default function ProjectDetailsPage() {
     };
     fetchLoginStatus();
   }, [isLogin]);
+  useEffect(() => {
+    if (daysUntilDeadline <= 0) {
+      const doDropProject = async () => {
+        await dropProject();
+      };
+      doDropProject();
+    }
+  }, [daysUntilDeadline]);
   return (
     <>
       {pageLoading ? (
