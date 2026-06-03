@@ -48,7 +48,7 @@ export default function page() {
                   </div>
 
                   <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-                    Share Company ID
+                    {user.companyId.companyName}
                   </h1>
                   <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                     Share this ID with employees so they can join your company.
