@@ -1,8 +1,9 @@
 import { connectToDB } from "@/app/lib/connectToDB";
+import companyModel from "@/app/models/company.model";
 import pendingprojectModel from "@/app/models/pendingproject.model";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
-
+companyModel;
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ companyId: string }> },
