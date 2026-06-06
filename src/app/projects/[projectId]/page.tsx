@@ -927,6 +927,9 @@ export default function ProjectDetailsPage() {
   }, [members]);
   useEffect(() => {
     if (deadLineCalc(project.deadlineDate) <= 0 && project._id) {
+      // console.log(
+      //   `Dropping Project because project deadline is :${project.deadlineDate} and deadLineCalc is : ${deadLineCalc(project.deadlineDate)}`,
+      // );
       dropProject();
     }
   }, [deadLineCalc(project.deadlineDate)]);
@@ -982,14 +985,7 @@ export default function ProjectDetailsPage() {
     };
     fetchLoginStatus();
   }, [isLogin]);
-  useEffect(() => {
-    if (daysUntilDeadline <= 0) {
-      const doDropProject = async () => {
-        await dropProject();
-      };
-      doDropProject();
-    }
-  }, [daysUntilDeadline]);
+
   return (
     <>
       {pageLoading ? (

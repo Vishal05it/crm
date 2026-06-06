@@ -1,4 +1,4 @@
-export const deadLineCalc = (deadLine: string | number): number => {
+export const deadLineCalc = (deadLine: string): number => {
   let monthlyDays = [
     { month: "January", days: 31 },
     { month: "February", days: 28 },
@@ -26,19 +26,21 @@ export const deadLineCalc = (deadLine: string | number): number => {
     return 0;
   }
   if (yearOut == currYear) {
-    if (monthOut < currMonth) {
+    if (monthOut < currMonth + 1) {
       // console.log("Deadline passed");
       return 0;
     }
-    if (monthOut == currMonth && dayOut < currDay) {
+    if (monthOut == currMonth + 1 && dayOut < currDay) {
       // console.log("Deadline passed");
       return 0;
     }
     if (monthOut == currMonth + 1 && dayOut > currDay) {
+      // console.log(`Curr month is ${currMonth} & monthOut is : ${monthOut}`);
       return dayOut - currDay;
     }
     let totalDays = monthlyDays[currMonth].days - currDay;
-    if (monthOut == currMonth && dayOut > currDay) {
+    if (monthOut == currMonth + 1 && dayOut > currDay) {
+      //console.log(`Curr month is ${currMonth} & monthOut is : ${monthOut}`);
       return totalDays;
     }
     let additionalDays = 0;
