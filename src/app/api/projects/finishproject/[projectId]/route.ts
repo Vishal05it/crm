@@ -79,6 +79,22 @@ export async function POST(
           on: "Complete",
           action: "Add",
         });
+        const sendNotification = await notificationModel
+          .findById(newNotification._id)
+          .populate("byUser")
+          .populate("forProject");
+
+        await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            event: "project-completed",
+            userId: elm.user,
+            payload: sendNotification,
+          }),
+        });
       }
     });
     let deleteProjectDetails = await redis.del(
@@ -139,6 +155,22 @@ export async function DELETE(
           forUser: elm.user,
           on: "Complete",
           action: "Remove",
+        });
+        const sendNotification = await notificationModel
+          .findById(newNotification._id)
+          .populate("forProject")
+          .populate("byUser");
+
+        await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            event: "project-unfinished",
+            userId: body.forUser,
+            payload: sendNotification,
+          }),
         });
       }
     });

@@ -50,6 +50,16 @@ export async function POST(
     const sendMessage = await messageModel
       .findById(newMessage._id)
       .populate("sentBy");
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}]`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        projectId,
+        newMessage: sendMessage,
+      }),
+    });
     const allMembers = await memberModel.find({ forProject: projectId });
     await Promise.all(
       allMembers.map(async (member) => {

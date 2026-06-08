@@ -32,7 +32,23 @@ export async function PUT(
         on: "Task",
         action: "Complete",
       });
-      console.log("Task finish notification : ", newNotification);
+      const sendNotification = await notificationModel
+        .findById(newNotification._id)
+        .populate("forProject")
+        .populate("byUser");
+
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: "task-completed",
+          userId: body.forUser,
+          payload: sendNotification,
+        }),
+      });
+      // console.log("Task finish notification : ", newNotification);
     }
     return NextResponse.json({
       message: "Task completed",

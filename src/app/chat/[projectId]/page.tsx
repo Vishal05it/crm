@@ -14,7 +14,7 @@ import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { clearAllMessages } from "@/app/utils/cacheclear/shared/clearAllMessages";
 import { clearUnread } from "@/app/utils/cacheclear/personalised/clearUnread";
-
+import { socket } from "../../lib/socket";
 type Members = {
   _id: string;
   user: User;
@@ -212,7 +212,25 @@ export default function page() {
     );
     lastMessage?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
+  useEffect(() => {
+    if (!param.projectId) {
+      return;
+    }
+    socket.emit("join-project", param.projectId);
+    socket.on("new-message", (newMessage) => {
+      console.log(
+        `New message arrived via socket by : ${newMessage.sentBy.name}`,
+      );
+      setMessages((prev) => {
+        let found = prev.some((msg) => msg._id == newMessage._id);
+        if (found) return prev;
+        return [...prev, newMessage];
+      });
+    });
+    return () => {
+      socket.emit("leave-project", param.projectId);
+    };
+  }, [param.projectId]);
   return (
     <>
       {pageLoading ? (
@@ -400,7 +418,6 @@ export default function page() {
                     accept="image/*"
                     className="hidden"
                   />
-
                   <input
                     type="text"
                     value={sendMessageState}

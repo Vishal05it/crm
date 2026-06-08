@@ -38,7 +38,23 @@ export async function POST(
         on: "Image",
         action: "Add",
       });
-      console.log("New img notification : ", newNotification);
+      const sendNotification = await notificationModel
+        .findById(newNotification._id)
+        .populate("forProject")
+        .populate("byUser");
+
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: "image-approved",
+          userId: body.forUser,
+          payload: sendNotification,
+        }),
+      });
+      //console.log("New img notification : ", newNotification);
     }
     let deleteProjectDetails = await redis.del(
       `projectDetails:projectId:${body.forProject}:companyId:${body.companyId}`,
@@ -89,7 +105,23 @@ export async function DELETE(
         on: "Image",
         action: "Remove",
       });
-      console.log("New img notification : ", newNotification);
+      const sendNotification = await notificationModel
+        .findById(newNotification._id)
+        .populate("forProject")
+        .populate("byUser");
+
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: "image-rejected",
+          userId: body.forUser,
+          payload: sendNotification,
+        }),
+      });
+      //console.log("New img notification : ", newNotification);
     }
     let deleteProjectDetails = await redis.del(
       `projectDetails:projectId:${body.forProject}:companyId:${body.companyId}`,

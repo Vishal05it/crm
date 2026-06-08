@@ -75,13 +75,16 @@ export default function ChangeEmailPage() {
   };
   const executeCheckLogin = async () => {
     try {
-      let loggedData = await checkLogin(user._id);
-      if (loggedData) {
-        setIsLogin(true);
-        return true;
-      } else {
-        setIsLogin(true);
-        return false;
+      if (isLogin) {
+        let loggedData = await checkLogin(user._id);
+        if (loggedData) {
+          setIsLogin(true);
+          return true;
+        } else {
+          setIsLogin(false);
+          router.push("/login");
+          return false;
+        }
       }
     } catch (error) {
       console.log(error);

@@ -14,15 +14,18 @@ export default function page() {
   const router = useRouter();
   const executeCheckLogin = async () => {
     try {
-      let loggedData = await checkLogin(user._id);
-      if (loggedData) {
-        setIsLogin(true);
-        let result = await isManager(user._id);
-        if (result) setUser({ ...user, isManager: true });
-        return true;
-      } else {
-        setIsLogin(true);
-        return false;
+      if (isLogin) {
+        let loggedData = await checkLogin(user._id);
+        if (loggedData) {
+          setIsLogin(true);
+          let result = await isManager(user._id);
+          if (result) setUser({ ...user, isManager: true });
+          return true;
+        } else {
+          setIsLogin(false);
+          router.push("/login");
+          return false;
+        }
       }
     } catch (error) {
       console.log(error);

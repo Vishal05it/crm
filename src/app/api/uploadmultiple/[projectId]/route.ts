@@ -55,7 +55,23 @@ export async function POST(
           on: "ImageApproval",
           action: "Add",
         });
-        console.log("Image approval notification", newNotification);
+        const sendNotification = await notificationModel
+          .findById(newNotification._id)
+          .populate("forProject")
+          .populate("byUser");
+
+        await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            event: "image-uploaded",
+            userId: elm.user,
+            payload: sendNotification,
+          }),
+        });
+        // console.log("Image approval notification", newNotification);
       }
     });
     const sendImage = await pendingimageModel

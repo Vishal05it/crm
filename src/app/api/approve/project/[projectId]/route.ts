@@ -55,6 +55,22 @@ export async function POST(
       forProject: project._id,
       addedMs: body.addedMs,
     });
+    const sendMemberNotification = await notificationModel
+      .findById(memberNotification._id)
+      .populate("forProject")
+      .populate("byUser");
+
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: "member-added",
+        userId: body.createdBy,
+        payload: sendMemberNotification,
+      }),
+    });
     let allPendingImagesArray = await pendingimageModel.find({
       forProject: pendingProject._id,
     });
@@ -77,6 +93,21 @@ export async function POST(
       action: "Add",
       forProject: project._id,
       addedMs: body.addedMs,
+    });
+    const sendNotification = await notificationModel
+      .findById(notification._id)
+      .populate("forProject")
+      .populate("byUser");
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: "project-approved",
+        userId: body.createdBy,
+        payload: sendNotification,
+      }),
     });
     return NextResponse.json({
       message: "Project is approved",
@@ -132,8 +163,23 @@ export async function DELETE(
       addedMs: body.addedMs,
       title: pendingProject.title,
     });
+    let sendNotification = await notificationModel
+      .findById(notification._id)
+      .populate("byUser");
     const deleteProject =
       await pendingprojectModel.findByIdAndDelete(projectId);
+
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: "project-rejected",
+        userId: body.forUser,
+        payload: sendNotification,
+      }),
+    });
     return NextResponse.json({
       message: "Project rejected",
       success: true,

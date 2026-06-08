@@ -95,6 +95,22 @@ export async function PUT(
       let deleteProjectDetails = await redis.del(
         `projectDetails:projectId:${member.forProject}:companyId:${member.user.companyId}`,
       );
+      const sendNotification = await notificationModel
+        .findById(newNotification._id)
+        .populate("forProject")
+        .populate("byUser");
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: "made-admin",
+          userId: member.user,
+          payload: sendNotification,
+        }),
+      });
       return NextResponse.json({
         message: "Member is now admin",
         success: true,
@@ -113,6 +129,23 @@ export async function PUT(
       let deleteProjectDetails = await redis.del(
         `projectDetails:projectId:${body.forProject}:companyId:${body.companyId}`,
       );
+      const sendNotification = await notificationModel
+        .findById(newNotification._id)
+        .populate("forProject")
+        .populate("byUser");
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: "remove-admin",
+          userId: member.user,
+          payload: sendNotification,
+        }),
+      });
+
       return NextResponse.json({
         message: "Member removed as admin",
         success: true,

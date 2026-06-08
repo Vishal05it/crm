@@ -38,6 +38,18 @@ export async function POST(
     const sendMessage = await messageModel
       .findById(newMessage._id)
       .populate("sentBy");
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/chat-message`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: "new-message",
+        projectId: body.forProject,
+        payload: sendMessage,
+      }),
+    });
+
     await Promise.all(
       allMembers.map(async (member) => {
         if (member.user != userId) {
@@ -47,6 +59,24 @@ export async function POST(
             notReadBy: member.user,
             forCompany: body.forCompany,
           });
+          const unReadMessageCount = await messagetrackerModel.countDocuments({
+            forProject: body.forProject,
+            notReadBy: member.user,
+          });
+          await fetch(
+            `${process.env.NEXT_PUBLIC_SOCKET_URL}/count-unread`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: member.user,
+                event: "new-unread-count",
+                payload: unReadMessageCount,
+              }),
+            },
+          );
         }
       }),
     );

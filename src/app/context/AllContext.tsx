@@ -52,6 +52,8 @@ type Context = {
   setFinishedDate: React.Dispatch<React.SetStateAction<string>>;
   called: boolean;
   setCalled: React.Dispatch<React.SetStateAction<boolean>>;
+  socketCall: boolean;
+  setSocketCall: React.Dispatch<React.SetStateAction<boolean>>;
   pendingCount: number;
   setPendingCount: React.Dispatch<React.SetStateAction<number>>;
   pendingProjectsCount: number;
@@ -199,6 +201,7 @@ function AllContext({ children }: { children: ReactNode }) {
   let [pageLoading, setPageLoading] = useState<boolean>(false);
   const [leaveBtn, setLeaveBtn] = useState<boolean>(false);
   const [called, setCalled] = useState<boolean>(false);
+  const [socketCall, setSocketCall] = useState<boolean>(false);
   let [filterRead, setFilterRead] = useState<number>(0);
   let [filterUnRead, setFilterUnRead] = useState<number>(0);
   let [user, setUser] = useState<User>({
@@ -348,6 +351,8 @@ function AllContext({ children }: { children: ReactNode }) {
         setActiveCount,
         prevProject,
         setprevProject,
+        socketCall,
+        setSocketCall,
       }}
     >
       {children}

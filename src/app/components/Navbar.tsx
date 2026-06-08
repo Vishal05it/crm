@@ -27,7 +27,7 @@ import Logo from "../../../public/logo-removebg-preview.png";
 import Image from "next/image";
 import ButtonLoading from "./ButtonLoading";
 import { checkLogin } from "../utils/checkLogin";
-
+import { socket } from "../lib/socket";
 export default function Navbar() {
   const navigate = useRouter();
   const [notifications, setNotifications] = useState<number>(0);
@@ -75,6 +75,7 @@ export default function Navbar() {
     completeCount,
     setCompleteCount,
     activeCount,
+    allNotifications,
     setActiveCount,
   } = useAllContexts();
 
@@ -101,13 +102,16 @@ export default function Navbar() {
 
   const executeCheckLogin = async () => {
     try {
-      let loggedData = await checkLogin(user._id);
-      if (loggedData) {
-        setIsLogin(true);
-        return true;
-      } else {
-        setIsLogin(true);
-        return false;
+      if (isLogin) {
+        let loggedData = await checkLogin(user._id);
+        if (loggedData) {
+          setIsLogin(true);
+          return true;
+        } else {
+          setIsLogin(true);
+          navigate.push("/login");
+          return false;
+        }
       }
     } catch (error) {
       console.log(error);
@@ -115,6 +119,132 @@ export default function Navbar() {
     }
   };
 
+  useEffect(() => {
+    if (!isLogin) return;
+    socket.on("task-assigned", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("made-admin", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("remove-admin", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("project-approved", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("project-rejected", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("project-dropped", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("project-restarted", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("project-completed", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("project-unfinished", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("image-rejected", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("image-approved", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("task-completed", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("image-uploaded", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("member-added", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    socket.on("account-approved", (notification) => {
+      setAllNotifications((prev) => {
+        const found = prev.some((currNot) => currNot._id == notification._id);
+        if (found) return prev;
+        return [...prev, notification];
+      });
+    });
+    // console.log(socket.listeners("task-assigned").length);
+    return () => {
+      socket.off("task-assigned", (notification) => {});
+      socket.off("made-admin", (notification) => {});
+      socket.off("remove-admin", (notification) => {});
+      socket.off("project-approved", (notification) => {});
+      socket.off("project-rejected", (notification) => {});
+      socket.off("project-dropped", (notification) => {});
+      socket.off("project-restarted", (notification) => {});
+      socket.off("project-completed", (notification) => {});
+      socket.off("project-unfinished", (notification) => {});
+      socket.off("image-rejected", (notification) => {});
+      socket.off("image-approved", (notification) => {});
+      socket.off("task-completed", (notification) => {});
+      socket.off("image-uploaded", (notification) => {});
+      socket.off("member-added", (notification) => {});
+      socket.off("account-approved", (notification) => {});
+    };
+  }, [isLogin]);
   useEffect(() => {
     const fetchLoginStatus = async () => {
       await executeCheckLogin();

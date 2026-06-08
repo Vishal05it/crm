@@ -40,6 +40,7 @@ export async function POST(
     const assignedBy = await memberModel
       .findById(sendTask.assignedBy._id)
       .populate("user");
+    console.log(`For user = ${body.forUser} & By User = ${body.byUser}`);
     if (body.forUser != body.byUser) {
       const newNotification = await notificationModel.create({
         byUser: body.byUser,
@@ -49,7 +50,24 @@ export async function POST(
         on: "Task",
         action: "Add",
       });
+      const sendNotification = await notificationModel
+        .findById(newNotification._id)
+        .populate("forProject")
+        .populate("byUser");
+
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: "task-assigned",
+          userId: body.forUser,
+          payload: sendNotification,
+        }),
+      });
     }
+
     return NextResponse.json({
       message: "New task created",
       success: true,

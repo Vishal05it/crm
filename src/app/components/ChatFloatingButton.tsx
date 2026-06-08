@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { baseURL } from "../utils/baseURL";
 import { errorEmitter, successEmitter } from "../utils/emitter";
 import ButtonLoading from "./ButtonLoading";
-
+import { socket } from "../lib/socket";
 export default function ChatFloatingButton({ projectId }: Props) {
   const router = useRouter();
   const [msgLoading, setMsgLoading] = useState<boolean>(false);
@@ -44,7 +44,21 @@ export default function ChatFloatingButton({ projectId }: Props) {
       fetchMessage();
     }
   }, [projectId]);
-
+  useEffect(() => {
+    if (!projectId) return;
+    socket.emit("new-unread", {
+      userId: user._id,
+    });
+    socket.on("new-unread-count", (number) => {
+      //console.log(`New number received : ${number}`);
+      setUnreadMessages(number);
+    });
+    return () => {
+      socket.emit("leave-unread", {
+        userId: user._id,
+      });
+    };
+  }, [projectId]);
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <div className="relative flex items-end justify-end">
@@ -52,7 +66,7 @@ export default function ChatFloatingButton({ projectId }: Props) {
           className={
             unreadMessages > 0
               ? `absolute -top-10 right-0 z-100 rounded-full border border-red-500/20 bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl`
-              : `absolute -top-4 right-0 z-100 rounded-full border border-emerald-500/20 bg-emerald-500 px-3 py-1 text-xs font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl`
+              : `absolute opacity-0 -top-4 right-0 z-100 rounded-full border border-emerald-500/20 bg-emerald-500 px-3 py-1 text-xs font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl`
           }
         >
           {msgLoading ? (
@@ -60,7 +74,7 @@ export default function ChatFloatingButton({ projectId }: Props) {
           ) : unreadMessages > 0 ? (
             `${unreadMessages} unread messages`
           ) : (
-            "0"
+            ""
           )}
         </div>
 

@@ -51,6 +51,22 @@ export async function POST(
     let deleteProjectDetails = await redis.del(
       `projectDetails:projectId:${newMember.forProject}:companyId:${user.companyId}`,
     );
+    let sendNotification = await notificationModel
+      .findById(newNotification._id)
+      .populate("forProject")
+      .populate("byUser");
+    const NEXT_PUBLIC_SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
+    await fetch(`${NEXT_PUBLIC_SOCKET_URL}/emit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: "member-added",
+        userId: userId,
+        payload: sendNotification,
+      }),
+    });
     return NextResponse.json({
       message: "New member created",
       success: true,

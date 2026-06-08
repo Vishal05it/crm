@@ -34,7 +34,7 @@ export const deadLineCalc = (deadLine: string): number => {
       // console.log("Deadline passed");
       return 0;
     }
-    if (monthOut == currMonth + 1 && dayOut > currDay) {
+    if (monthOut == currMonth + 1 && dayOut >= currDay) {
       // console.log(`Curr month is ${currMonth} & monthOut is : ${monthOut}`);
       return dayOut - currDay;
     }

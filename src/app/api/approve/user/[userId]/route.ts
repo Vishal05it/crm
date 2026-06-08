@@ -33,6 +33,21 @@ export async function POST(
       isRead: false,
       addedMs: body.addedMs,
     });
+    let sendNotification = await notificationModel
+      .findById(newNotification._id)
+      .populate("byUser");
+
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: "account-approved",
+        userId: newUser._id,
+        payload: sendNotification,
+      }),
+    });
     transport.sendMail({
       from: process.env.EMAIL,
       to: newUser.email,

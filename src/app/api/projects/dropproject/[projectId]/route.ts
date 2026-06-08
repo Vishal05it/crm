@@ -68,6 +68,22 @@ export async function POST(
           on: "Project",
           action: "Remove",
         });
+        const sendNotification = await notificationModel
+          .findById(newNotification._id)
+          .populate("forProject")
+          .populate("byUser");
+
+        await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            event: "project-dropped",
+            userId: elm.user,
+            payload: sendNotification,
+          }),
+        });
       }
     });
     let deleteProjectDetails = await redis.del(
@@ -126,7 +142,23 @@ export async function DELETE(
           addedMs: body.addedMs,
           action: "Add",
         });
-        console.log("A notification in backend : ", newNotification);
+        const sendNotification = await notificationModel
+          .findById(newNotification._id)
+          .populate("byUser")
+          .populate("forProject");
+
+        await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/emit`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            event: "project-restarted",
+            userId: elm.user,
+            payload: sendNotification,
+          }),
+        });
+        //console.log("A notification in backend : ", newNotification);
       }
     });
     let deleteProjectDetails = await redis.del(
