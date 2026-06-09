@@ -27,7 +27,7 @@ import Logo from "../../../public/logo-removebg-preview.png";
 import Image from "next/image";
 import ButtonLoading from "./ButtonLoading";
 import { checkLogin } from "../utils/checkLogin";
-import { socket } from "../lib/socket";
+import { connectToSocket } from "../lib/socket";
 export default function Navbar() {
   const navigate = useRouter();
   const [notifications, setNotifications] = useState<number>(0);
@@ -121,105 +121,111 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!isLogin) return;
-    socket.on("task-assigned", (notification) => {
+    let socket: any;
+    let connectSocket = async () => {
+      socket = await connectSocket();
+      socket.on("connect", () => {});
+    };
+    connectSocket();
+    socket.on("task-assigned", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("made-admin", (notification) => {
+    socket.on("made-admin", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("remove-admin", (notification) => {
+    socket.on("remove-admin", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("project-approved", (notification) => {
+    socket.on("project-approved", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("project-rejected", (notification) => {
+    socket.on("project-rejected", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("project-dropped", (notification) => {
+    socket.on("project-dropped", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("project-restarted", (notification) => {
+    socket.on("project-restarted", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("project-completed", (notification) => {
+    socket.on("project-completed", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("project-unfinished", (notification) => {
+    socket.on("project-unfinished", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("image-rejected", (notification) => {
+    socket.on("image-rejected", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("image-approved", (notification) => {
+    socket.on("image-approved", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("task-completed", (notification) => {
+    socket.on("task-completed", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("image-uploaded", (notification) => {
+    socket.on("image-uploaded", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("member-added", (notification) => {
+    socket.on("member-added", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
         return [...prev, notification];
       });
     });
-    socket.on("account-approved", (notification) => {
+    socket.on("account-approved", (notification: any) => {
       setAllNotifications((prev) => {
         const found = prev.some((currNot) => currNot._id == notification._id);
         if (found) return prev;
@@ -228,21 +234,21 @@ export default function Navbar() {
     });
     // console.log(socket.listeners("task-assigned").length);
     return () => {
-      socket.off("task-assigned", (notification) => {});
-      socket.off("made-admin", (notification) => {});
-      socket.off("remove-admin", (notification) => {});
-      socket.off("project-approved", (notification) => {});
-      socket.off("project-rejected", (notification) => {});
-      socket.off("project-dropped", (notification) => {});
-      socket.off("project-restarted", (notification) => {});
-      socket.off("project-completed", (notification) => {});
-      socket.off("project-unfinished", (notification) => {});
-      socket.off("image-rejected", (notification) => {});
-      socket.off("image-approved", (notification) => {});
-      socket.off("task-completed", (notification) => {});
-      socket.off("image-uploaded", (notification) => {});
-      socket.off("member-added", (notification) => {});
-      socket.off("account-approved", (notification) => {});
+      socket?.off("task-assigned", (notification: any) => {});
+      socket?.off("made-admin", (notification: any) => {});
+      socket?.off("remove-admin", (notification: any) => {});
+      socket?.off("project-approved", (notification: any) => {});
+      socket?.off("project-rejected", (notification: any) => {});
+      socket?.off("project-dropped", (notification: any) => {});
+      socket?.off("project-restarted", (notification: any) => {});
+      socket?.off("project-completed", (notification: any) => {});
+      socket?.off("project-unfinished", (notification: any) => {});
+      socket?.off("image-rejected", (notification: any) => {});
+      socket?.off("image-approved", (notification: any) => {});
+      socket?.off("task-completed", (notification: any) => {});
+      socket?.off("image-uploaded", (notification: any) => {});
+      socket?.off("member-added", (notification: any) => {});
+      socket?.off("account-approved", (notification: any) => {});
     };
   }, [isLogin]);
   useEffect(() => {
