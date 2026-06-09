@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 import { baseURL } from "../utils/baseURL";
 let socket;
 export const connectToSocket = async () => {
+  console.log(`Connecting Socket...`);
   let response = await fetch(`${baseURL}/socket-auth`);
   let socketData = await response.json();
   console.log("Socket Data : ", socketData);
