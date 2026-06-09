@@ -4,12 +4,16 @@ let socket;
 export const connectToSocket = async () => {
   let response = await fetch(`${baseURL}/socket-auth`);
   let socketData = await response.json();
+  console.log("Socket Data : ", socketData);
   if (!socketData.success) throw new Error("Socket auth failed");
   socket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
     auth: {
       token: socketData.socketToken,
     },
   });
+  // if (socket?.io?.opts?.auth) {
+  //   console.log(socket.io.opts?.auth);
+  // }
   return socket;
 };
 export { socket };
