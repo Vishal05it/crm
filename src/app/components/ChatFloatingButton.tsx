@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { baseURL } from "../utils/baseURL";
 import { errorEmitter, successEmitter } from "../utils/emitter";
 import ButtonLoading from "./ButtonLoading";
-import { socket } from "../lib/socket";
+import { connectToSocket } from "../lib/socket";
 export default function ChatFloatingButton({ projectId }: Props) {
   const router = useRouter();
   const [msgLoading, setMsgLoading] = useState<boolean>(false);
@@ -46,15 +46,20 @@ export default function ChatFloatingButton({ projectId }: Props) {
   }, [projectId]);
   useEffect(() => {
     if (!projectId) return;
-    socket.emit("new-unread", {
-      userId: user._id,
-    });
-    socket.on("new-unread-count", (number) => {
-      //console.log(`New number received : ${number}`);
-      setUnreadMessages(number);
-    });
+    let socketInstance: any;
+    let initSocket = async () => {
+      await connectToSocket();
+      socketInstance.emit("new-unread", {
+        userId: user._id,
+      });
+      socketInstance.on("new-unread-count", (number: number) => {
+        //console.log(`New number received : ${number}`);
+        setUnreadMessages(number);
+      });
+    };
+    initSocket();
     return () => {
-      socket.emit("leave-unread", {
+      socketInstance?.emit("leave-unread", {
         userId: user._id,
       });
     };
