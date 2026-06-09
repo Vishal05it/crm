@@ -40,7 +40,9 @@ export async function POST(req: NextRequest) {
       .populate("companyId");
 
     const SECRET_KEY = process.env.SECRET_KEY;
-    let authToken = jwt.sign({ userId: userExist._id }, SECRET_KEY as string);
+    let authToken = jwt.sign({ userId: userExist._id }, SECRET_KEY as string, {
+      expiresIn: "5d",
+    });
     let response = NextResponse.json({
       message: "Logged in successfully",
       success: true,
