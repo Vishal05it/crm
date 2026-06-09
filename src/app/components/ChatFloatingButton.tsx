@@ -48,7 +48,7 @@ export default function ChatFloatingButton({ projectId }: Props) {
     if (!projectId) return;
     let socketInstance: any;
     let initSocket = async () => {
-      await connectToSocket();
+      socketInstance = await connectToSocket();
       socketInstance.emit("new-unread", {
         userId: user._id,
       });

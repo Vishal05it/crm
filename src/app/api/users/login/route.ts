@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
         user: sendUser,
       }),
     );
+    console.log("Response : ", response.cookies.getAll());
     return response;
   } catch (error) {
     console.log(error);
