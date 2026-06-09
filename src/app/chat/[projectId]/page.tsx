@@ -14,7 +14,7 @@ import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { clearAllMessages } from "@/app/utils/cacheclear/shared/clearAllMessages";
 import { clearUnread } from "@/app/utils/cacheclear/personalised/clearUnread";
-import { socket } from "../../lib/socket";
+import { connectToSocket } from "../../lib/socket";
 type Members = {
   _id: string;
   user: User;
@@ -216,19 +216,24 @@ export default function page() {
     if (!param.projectId) {
       return;
     }
-    socket.emit("join-project", param.projectId);
-    socket.on("new-message", (newMessage) => {
-      console.log(
-        `New message arrived via socket by : ${newMessage.sentBy.name}`,
-      );
-      setMessages((prev) => {
-        let found = prev.some((msg) => msg._id == newMessage._id);
-        if (found) return prev;
-        return [...prev, newMessage];
+    let socketInstance: any;
+    let initSocket = async () => {
+      socketInstance = await connectToSocket();
+      socketInstance.emit("join-project", param.projectId);
+      socketInstance.on("new-message", (newMessage: any) => {
+        console.log(
+          `New message arrived via socket by : ${newMessage.sentBy.name}`,
+        );
+        setMessages((prev) => {
+          let found = prev.some((msg) => msg._id == newMessage._id);
+          if (found) return prev;
+          return [...prev, newMessage];
+        });
       });
-    });
+    };
+    initSocket();
     return () => {
-      socket.emit("leave-project", param.projectId);
+      socketInstance?.emit("leave-project", param.projectId);
     };
   }, [param.projectId]);
   return (
