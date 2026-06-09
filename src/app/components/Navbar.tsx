@@ -124,6 +124,9 @@ export default function Navbar() {
     let socketInstance: any;
     const initSocket = async () => {
       socketInstance = await connectToSocket();
+      socketInstance.on("connect", () => {
+        console.log("Socket connected");
+      });
       socketInstance.on("task-assigned", (notification: any) => {
         setAllNotifications((prev) => {
           const found = prev.some((currNot) => currNot._id == notification._id);
