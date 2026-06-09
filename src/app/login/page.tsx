@@ -42,6 +42,10 @@ export default function LoginPage() {
 
       let response = await fetch(`${baseURL}/users/login`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
         body: JSON.stringify(form),
       });
 
