@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 export async function GET(req: NextRequest) {
   try {
-    let cookieStore = req.cookies;
-    let authToken = cookieStore.get("authToken")?.value;
+    let cookieStore = await cookies();
+    console.log("Cookie Store : ", cookieStore);
+    console.log("Cookie All : ", cookieStore.getAll());
+    let authToken = cookieStore.getAll()[0].value;
+
     if (!authToken) {
       return NextResponse.json({
         message: "Token not found",
         success: false,
+        cookieStore,
+        cookieStoreAll: cookieStore.getAll(),
       });
     }
     const SECRET_KEY = process.env.SECRET_KEY;
@@ -17,7 +23,7 @@ export async function GET(req: NextRequest) {
       { userId: decode?.userId as string, type: "socket" },
       SECRET_KEY,
       {
-        expiresIn: "5m",
+        expiresIn: "2m",
       },
     );
     return NextResponse.json({
@@ -26,11 +32,14 @@ export async function GET(req: NextRequest) {
       socketToken,
     });
   } catch (error) {
+    let cookieStore = await cookies();
     console.log(error);
     return NextResponse.json(
       {
         message: "Unauthorized",
         success: false,
+        cookieAll: cookieStore.getAll(),
+        token: cookieStore.getAll()[0].value,
       },
       { status: 401 },
     );

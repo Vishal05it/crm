@@ -3,7 +3,13 @@ import { baseURL } from "../utils/baseURL";
 let socket;
 export const connectToSocket = async () => {
   console.log(`Connecting Socket...`);
-  let response = await fetch(`${baseURL}/socket-auth`);
+  let response = await fetch(`${baseURL}/socket-auth`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   let socketData = await response.json();
   console.log("Socket Data : ", socketData);
   if (!socketData.success) throw new Error("Socket auth failed");
