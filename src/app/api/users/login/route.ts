@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     });
     response.cookies.set("authToken", authToken, {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
     });

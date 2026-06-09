@@ -3,11 +3,11 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 export async function GET(req: NextRequest) {
   try {
-    let cookieStore = await cookies();
+    let cookieStore = req.cookies;
     console.log("Cookie Store : ", cookieStore);
     console.log("Cookie All : ", cookieStore.getAll());
-    let authToken = cookieStore.getAll()[0].value;
-
+    let authToken = cookieStore.getAll()[1].value;
+    console.log("Token extracted : ", authToken);
     if (!authToken) {
       return NextResponse.json({
         message: "Token not found",
@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
     const SECRET_KEY = process.env.SECRET_KEY;
     if (!SECRET_KEY) throw new Error("Secret Key missing");
     const decode: any = jwt.verify(authToken, SECRET_KEY as string);
+    console.log("Decode", decode);
     const socketToken = jwt.sign(
       { userId: decode?.userId as string, type: "socket" },
       SECRET_KEY,
@@ -39,7 +40,7 @@ export async function GET(req: NextRequest) {
         message: "Unauthorized",
         success: false,
         cookieAll: cookieStore.getAll(),
-        token: cookieStore.getAll()[0].value,
+        token: cookieStore.getAll()[1].value,
       },
       { status: 401 },
     );
